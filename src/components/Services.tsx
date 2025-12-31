@@ -1,5 +1,5 @@
 
-import { ShieldCheck, Bell, DoorClosed, FireExtinguisher, Wind, Smoke } from 'lucide-react';
+import { ShieldCheck, Bell, DoorClosed, Wrench , Wind, AlarmSmoke } from 'lucide-react';
 
 const services = [
   {
@@ -13,7 +13,7 @@ const services = [
     description: "Vérification, entretien et maintenance des portes coupe-feu. Contrôles de conformité, lubrification des mécanismes et remise en état."
   },
   {
-    icon: FireExtinguisher,
+    icon: Wrench ,
     title: 'Maintenance blocs de secours',
     description: "Maintenance des blocs de secours et éclairage de secours. Tests d'autonomie, vérification des batteries et changement des lampes."
   },
@@ -23,7 +23,7 @@ const services = [
     description: "Installation et mise en place de systèmes de désenfumage. Conformité réglementaire et intégration aux systèmes de sécurité incendie."
   },
   {
-    icon: Smoke,
+    icon: AlarmSmoke,
     title: 'Détection incendie',
     description: "Installation et maintenance des systèmes de détection incendie : détecteurs de fumée, détecteurs de chaleur et alarmes."
   },
