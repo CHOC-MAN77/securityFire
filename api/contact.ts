@@ -2,7 +2,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const TO_EMAIL = 'ngaiporoathanase@gmail.com'; // IMPORTANT: Change this to your email address
 const FROM_EMAIL = 'besi.dev'; // IMPORTANT: This must be a verified domain on Resend
 
@@ -10,6 +9,15 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+
+  if (!resendApiKey) {
+    console.error('RESEND_API_KEY is not defined.');
+    return response.status(500).json({ error: 'A server error occurred.' });
+  }
+
+  const resend = new Resend(resendApiKey);
+
   if (request.method !== 'POST') {
     return response.status(405).send('Method Not Allowed');
   }
@@ -21,7 +29,7 @@ export default async function handler(
   }
 
   try {
-    const {error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `Contact Form <${FROM_EMAIL}>`,
       to: [TO_EMAIL],
       subject: `New Contact Form Submission: ${requestType}`,
