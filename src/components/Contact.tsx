@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send,  } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -12,14 +12,11 @@ export default function Contact() {
     requestType: 'Installation',
     message: ''
   });
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false);
+  const [status, setStatus] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(false);
-    setSubmitted(false);
-
+    setStatus('sending');
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -28,9 +25,8 @@ export default function Contact() {
         },
         body: JSON.stringify(formData),
       });
-
       if (response.ok) {
-        setSubmitted(true);
+        setStatus('success');
         setFormData({
           firstName: '',
           lastName: '',
@@ -41,10 +37,10 @@ export default function Contact() {
           message: ''
         });
       } else {
-        setError(true);
+        setStatus('error');
       }
     } catch (error) {
-      setError(true);
+      setStatus('error');
     }
   };
 
@@ -68,7 +64,7 @@ export default function Contact() {
               <Phone className="w-8 h-8 text-white" />
             </div>
             <h3 className="font-bold text-xl text-primary mb-2">Par téléphone</h3>
-            <a href="tel:+33 6 36 11 52 63" className="text-lg text-gray-800 hover:text-primary transition-colors">+33 6 36 11 52 63</a>
+            <a href="tel:0123456789" className="text-lg text-gray-800 hover:text-primary transition-colors">01 23 45 67 89</a>
           </div>
 
           <div className="bg-white p-8 rounded-lg text-center shadow-md transform hover:scale-105 transition-transform duration-300">
@@ -76,8 +72,8 @@ export default function Contact() {
               <Mail className="w-8 h-8 text-white" />
             </div>
             <h3 className="font-bold text-xl text-primary mb-2">Par email</h3>
-            <a href="mailto:besi.services.incendie@gmail.com" className="text-lg text-gray-800 hover:text-primary transition-colors break-all">
-              besi.services.incendie@gmail.com
+            <a href="mailto:contact@protectofeu.example" className="text-lg text-gray-800 hover:text-primary transition-colors break-all">
+              contact@protectofeu.example
             </a>
           </div>
 
@@ -137,24 +133,29 @@ export default function Contact() {
                   <label htmlFor="message" className="absolute left-4 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-primary peer-focus:text-sm">Votre message</label>
                 </div>
 
-                {submitted && (
-                  <div className="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg">
-                    Merci ! Votre message a été envoyé. Nous vous répondrons dans les plus brefs délais.
+                {status === 'sending' && (
+                  <div className="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg">
+                    Envoi en cours...
                   </div>
                 )}
-
-                {error && (
+                {status === 'success' && (
+                  <div className="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg">
+                    Message envoyé avec succès !
+                  </div>
+                )}
+                {status === 'error' && (
                   <div className="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-lg">
-                    Une erreur s'est produite. Veuillez vérifier vos informations et réessayer.
+                    Une erreur est survenue. Veuillez réessayer.
                   </div>
                 )}
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-primary-dark text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+                  disabled={status === 'sending'}
+                  className="w-full bg-gradient-to-r from-primary to-primary-dark text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
-                  Envoyer le message
+                  {status === 'sending' ? 'Envoi...' : 'Envoyer le message'}
                 </button>
               </form>
             </div>
@@ -165,14 +166,14 @@ export default function Contact() {
                         <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                         <div>
                         <h3 className="font-bold text-primary mb-2">Notre adresse</h3>
-                        <p className="text-gray-800">40 Avenue du Président Allende<br />91100 Corbeil-Essonnes</p>
+                        <p className="text-gray-800">12 rue de la Sécurité<br />75010 Paris</p>
                         <p className="text-sm text-gray-500 mt-2">SIRET : 123 456 789 00010</p>
                         </div>
                     </div>
                 </div>
                 <div className="bg-gray-200 rounded-lg overflow-hidden h-96">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2638.6044179098317!2d2.473624411351657!3d48.598272718857835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e5e726dc9f91af%3A0x751ef5834804f490!2s40%20Av.%20du%20Pr%C3%A9sident%20Allende%2C%2091100%20Corbeil-Essonnes!5e0!3m2!1sfr!2sfr!4v1766245477114!5m2!1sfr!2sfr"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.2913508593834!2d2.3637!3d48.8738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDUyJzI1LjciTiAywrAyMSc0OS4zIkU!5e0!3m2!1sfr!2sfr!4v1234567890"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}

@@ -14,23 +14,24 @@ export default async function handler(
     return response.status(405).send('Method Not Allowed');
   }
 
-  const { name, email, company, rating, message, service } = request.body;
+  const { firstName, lastName, company, email, phone, requestType, message } = request.body;
 
-  if (!name || !email || !rating || !message || !service) {
+  if (!firstName || !lastName || !email || !requestType || !message) {
     return response.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `Testimonial Form <${FROM_EMAIL}>`,
+      from: `Contact Form <${FROM_EMAIL}>`,
       to: [TO_EMAIL],
-      subject: `New Testimonial from ${name}`,
+      subject: `New Contact Form Submission: ${requestType}`,
       html: `
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>First Name:</strong> ${firstName}</p>
+        <p><strong>Last Name:</strong> ${lastName}</p>
         <p><strong>Company:</strong> ${company || 'N/A'}</p>
-        <p><strong>Service:</strong> ${service}</p>
-        <p><strong>Rating:</strong> ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+        <p><strong>Request Type:</strong> ${requestType}</p>
         <p><strong>Message:</strong></p>
         <p>${message}</p>
       `,
