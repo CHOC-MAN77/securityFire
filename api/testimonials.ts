@@ -1,83 +1,51 @@
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import postgres from 'postgres';
+import { Resend } from 'resend';
 
-const sql = postgres(process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || '');
+const resend = new Resend(process.env.RESEND_API_KEY);
+const TO_EMAIL = 'contact@protectofeu.example'; // IMPORTANT: Change this to your email address
+const FROM_EMAIL = 'onboarding@resend.dev'; // IMPORTANT: This must be a verified domain on Resend
 
-async function initializeDatabase() {
+export default async function handler(
+  request: VercelRequest,
+  response: VercelResponse,
+) {
+  if (request.method !== 'POST') {
+    return response.status(405).send('Method Not Allowed');
+  }
+
+  const { name, email, company, rating, message, service } = request.body;
+
+  if (!name || !email || !rating || !message || !service) {
+    return response.status(400).json({ error: 'Missing required fields' });
+  }
+
   try {
-    await sql`
-      CREATE TABLE IF NOT EXISTS testimonials (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        company TEXT,
-        rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
-        message TEXT NOT NULL,
-        service TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        approved BOOLEAN DEFAULT FALSE
-      )
-    `;
+    const { data, error } = await resend.emails.send({
+      from: `Testimonial Form <${FROM_EMAIL}>`,
+      to: [TO_EMAIL],
+      subject: `New Testimonial from ${name}`,
+      html: `
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Company:</strong> ${company || 'N/A'}</p>
+        <p><strong>Service:</strong> ${service}</p>
+        <p><strong>Rating:</strong> ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+
+    if (error) {
+      console.error('Error sending email:', error);
+      return response.status(500).json({ error: 'Error sending email' });
+    }
+
+    return response.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Database initialization error:', error);
+    console.error('Error:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Internal Server Error';
+    return response.status(500).json({ error: errorMessage });
   }
-}
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  await initializeDatabase();
-
-  if (req.method === 'GET') {
-    try {
-      const testimonials = await sql`
-        SELECT id, name, company, rating, message, service, created_at
-        FROM testimonials
-        WHERE approved = TRUE
-        ORDER BY created_at DESC
-      `;
-      return res.status(200).json(testimonials);
-    } catch (error) {
-      console.error('API GET error:', error);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  if (req.method === 'POST') {
-    try {
-      const { name, email, company, rating, message, service } = req.body;
-
-      if (!name || !email || !message || !service || !rating) {
-        return res.status(400).json({ error: 'Missing required fields' });
-      }
-
-      const result = await sql`
-        INSERT INTO testimonials (name, email, company, rating, message, service)
-        VALUES (${name}, ${email}, ${company || null}, ${rating}, ${message}, ${service})
-        RETURNING id
-      `;
-
-      return res.status(200).json({
-        success: true,
-        id: result[0].id,
-        message: 'Testimonial submitted successfully'
-      });
-    } catch (error) {
-      console.error('API POST error:', error);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  return res.status(405).json({ error: 'Method not allowed' });
 }
