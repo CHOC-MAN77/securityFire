@@ -40,6 +40,7 @@ export default function Contact() {
         setStatus('error');
       }
     } catch (error) {
+      console.error('An unexpected error occurred:', error);
       setStatus('error');
     }
   };

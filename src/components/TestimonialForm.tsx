@@ -68,6 +68,7 @@ export default function TestimonialForm() {
         });
       }
     } catch (error) {
+      console.error('An unexpected error occurred:', error);
       setMessage({
         type: 'error',
         text: 'Erreur de connexion. Veuillez réessayer.'
