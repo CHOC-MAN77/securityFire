@@ -3,8 +3,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const TO_EMAIL = 'contact@protectofeu.example'; // IMPORTANT: Change this to your email address
-const FROM_EMAIL = 'BESI.dev'; // IMPORTANT: This must be a verified domain on Resend
+const TO_EMAIL = 'ngaiporoathanase@gmail.com'; // IMPORTANT: Change this to your email address
+const FROM_EMAIL = 'besi.dev'; // IMPORTANT: This must be a verified domain on Resend
 
 export default async function handler(
   request: VercelRequest,
