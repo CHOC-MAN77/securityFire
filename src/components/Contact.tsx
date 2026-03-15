@@ -65,7 +65,7 @@ export default function Contact() {
               <Phone className="w-8 h-8 text-white" />
             </div>
             <h3 className="font-bold text-xl text-primary mb-2">Par téléphone</h3>
-            <a href="tel:0123456789" className="text-lg text-gray-800 hover:text-primary transition-colors">01 23 45 67 89</a>
+            <a href="tel:+33 6 36 11 52 63" className="text-lg text-gray-800 hover:text-primary transition-colors">+33 6 36 11 52 63</a>
           </div>
 
           <div className="bg-white p-8 rounded-lg text-center shadow-md transform hover:scale-105 transition-transform duration-300">
@@ -73,8 +73,8 @@ export default function Contact() {
               <Mail className="w-8 h-8 text-white" />
             </div>
             <h3 className="font-bold text-xl text-primary mb-2">Par email</h3>
-            <a href="mailto:contact@protectofeu.example" className="text-lg text-gray-800 hover:text-primary transition-colors break-all">
-              contact@protectofeu.example
+            <a href="mailto:besi.services.incendie@gmail.com" className="text-lg text-gray-800 hover:text-primary transition-colors break-all">
+              besi.services.incendie@gmail.com
             </a>
           </div>
 
@@ -167,7 +167,7 @@ export default function Contact() {
                         <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                         <div>
                         <h3 className="font-bold text-primary mb-2">Notre adresse</h3>
-                        <p className="text-gray-800">12 rue de la Sécurité<br />75010 Paris</p>
+                        <p className="text-gray-800">40 Avenue de la Sécurité<br />91100 Corbeil-Essones</p>
                         <p className="text-sm text-gray-500 mt-2">SIRET : 123 456 789 00010</p>
                         </div>
                     </div>

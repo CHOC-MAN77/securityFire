@@ -2,7 +2,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 
-const TO_EMAIL = 'ngaiporoathanase@gmail.com'; // IMPORTANT: Change this to your email address
+const TO_EMAIL = 'besi.services.incendie@gmail.com'; // IMPORTANT: Change this to your email address
 const FROM_EMAIL = 'onboarding@resend.dev'; // IMPORTANT: This must be a verified domain on Resend
 
 export default async function handler(
